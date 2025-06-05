@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookstore API</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    pre {
+      background-color: #eee;
+      padding: 15px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Welcome to the Bookstore API!</h1>
+  <p>This is a simple Express.js application with MongoDB and TypeScript.</p>
+  <h2>Available API Endpoints:</h2>
+  <ul>
+    <li><code>GET /api/books</code> - Get all books</li>
+    <li><code>GET /api/books/:id</code> - Get a book by ID</li>
+    <li><code>POST /api/books</code> - Create a new book (Body:
+      <code>{ "title": "...", "author": "...", "isbn": "..." }</code>)
+    </li>
+    <li><code>PUT /api/books/:id</code> - Update a book by ID (Body:
+      <code>{ "title": "...", "author": "...", "isbn": "..." }</code>)
+    </li>
+    <li><code>DELETE /api/books/:id</code> - Delete a book by ID</li>
+    <li><code>GET /</code> - Serve this HTML file</li>
+  </ul>
+
+  <p>Example for creating a book (using cURL or Postman):</p>
+  <pre>
