@@ -1,19 +1,34 @@
-version: "3.8"
 services:
-  api:
-    build: .
+  app:
+    build:
+      context: ./server # Path to your server Dockerfile
+      dockerfile: Dockerfile
     ports:
-      - "5000:5000"
-    env_file:
-      - .env
+      - '3000:3000'
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/bookstoredb
+      PORT: 3000
     depends_on:
-      - mongo
-  mongo:
-    image: mongo
-    ports:
-      - "27017:27017"
+      - mongodb
     volumes:
-      - mongo-data:/data/db
+      - ./server:/app # Mount for live changes in dev, remove or adjust for prod
+      - /app/node_modules # Anonymous volume to avoid host node_modules conflict
+    command: sh -c "npm install && npm run dev" # For dev environment to use nodemon
+    networks:
+      - app-network
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db # Persist MongoDB data
+    networks:
+      - app-network
 
 volumes:
   mongo-data:
+
+networks:
+  app-network:
+    driver: bridge

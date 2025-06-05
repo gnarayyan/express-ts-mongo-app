@@ -14,7 +14,8 @@ export const getBookById = async (req: Request, res: Response) => {
   try {
     const book: IBook | null = await Book.findById(req.params.id);
     if (!book) {
-      return res.status(404).json({ message: 'Book not found' });
+      res.status(404).json({ message: 'Book not found' });
+      return;
     }
     res.status(200).json(book);
   } catch (error: any) {
@@ -25,7 +26,8 @@ export const getBookById = async (req: Request, res: Response) => {
 export const createBook = async (req: Request, res: Response) => {
   const { title, author, isbn } = req.body;
   if (!title || !author || !isbn) {
-    return res.status(400).json({ message: 'Missing required fields' });
+    res.status(400).json({ message: 'Missing required fields' });
+    return;
   }
 
   try {
@@ -35,9 +37,8 @@ export const createBook = async (req: Request, res: Response) => {
   } catch (error: any) {
     if (error.code === 11000) {
       // Duplicate key error for ISBN
-      return res
-        .status(409)
-        .json({ message: 'Book with this ISBN already exists.' });
+      res.status(409).json({ message: 'Book with this ISBN already exists.' });
+      return;
     }
     res.status(500).json({ message: error.message });
   }
@@ -51,7 +52,8 @@ export const updateBook = async (req: Request, res: Response) => {
       { new: true, runValidators: true }
     );
     if (!updatedBook) {
-      return res.status(404).json({ message: 'Book not found' });
+      res.status(404).json({ message: 'Book not found' });
+      return;
     }
     res.status(200).json(updatedBook);
   } catch (error: any) {
@@ -65,7 +67,8 @@ export const deleteBook = async (req: Request, res: Response) => {
       req.params.id
     );
     if (!deletedBook) {
-      return res.status(404).json({ message: 'Book not found' });
+      res.status(404).json({ message: 'Book not found' });
+      return;
     }
     res.status(200).json({ message: 'Book deleted successfully' });
   } catch (error: any) {
