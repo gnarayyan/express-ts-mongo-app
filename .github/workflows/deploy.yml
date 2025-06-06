@@ -33,39 +33,44 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          # The entire script block needs careful formatting
           script: |
             # Navigate to a desired directory on EC2 (create if it doesn't exist)
             mkdir -p /home/ubuntu/app/my-bookstore-app
             cd /home/ubuntu/app/my-bookstore-app
+
+            # Create the 'server' subdirectory before creating the .env file inside it
+            mkdir -p server
 
             # Create a .env file on the EC2 for the application
             # IMPORTANT: For production, manage these secrets securely (e.g., AWS Secrets Manager, SSM Parameter Store)
             echo "PORT=3000" > server/.env
             echo "MONGO_URI=mongodb://localhost:27017/bookstoredb" >> server/.env
 
-            # Pull the latest Docker image
-            docker pull ${{ secrets.DOCKER_USERNAME }}/my-bookstore-app:latest
+            # Pull the latest Docker image (use sudo)
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/my-bookstore-app:latest
 
-            # Stop and remove existing containers (if any)
-            if docker ps -a | grep -q "my-bookstore-app-app"; then
-              docker stop my-bookstore-app-app
-              docker rm my-bookstore-app-app
+            # Stop and remove existing containers (use sudo)
+            if sudo docker ps -a | grep -q "my-bookstore-app-app"; then
+              sudo docker stop my-bookstore-app-app
+              sudo docker rm my-bookstore-app-app
             fi
-            if docker ps -a | grep -q "my-bookstore-app-mongodb"; then
-              docker stop my-bookstore-app-mongodb
-              docker rm my-bookstore-app-mongodb
+            if sudo docker ps -a | grep -q "my-bookstore-app-mongodb"; then
+              sudo docker stop my-bookstore-app-mongodb
+              sudo docker rm my-bookstore-app-mongodb
             fi
 
-            # Start MongoDB container
-            docker run -d --name my-bookstore-app-mongodb -p 27017:27017 -v mongo-data:/data/db mongo:latest
+            # Start MongoDB container (use sudo)
+            sudo docker run -d --name my-bookstore-app-mongodb -p 27017:27017 -v mongo-data:/data/db mongo:latest
 
-            # Start the application container
-            docker run -d --name my-bookstore-app-app \
+            # Start the application container (use sudo and ensure correct line breaks for multiline command)
+            # Ensure no trailing spaces after backslashes!
+            sudo docker run -d --name my-bookstore-app-app \
               -p 3000:3000 \
-              --network host \ # Use host network to simplify MongoDB connection for this example
-              -e MONGO_URI=mongodb://127.0.0.1:27017/bookstoredb \ # Connect to MongoDB on host network
+              --network host \
+              -e MONGO_URI=mongodb://127.0.0.1:27017/bookstoredb \
               -e PORT=3000 \
               ${{ secrets.DOCKER_USERNAME }}/my-bookstore-app:latest
 
-            # Optional: Clean up old Docker images
-            docker system prune -f
+            # Optional: Clean up old Docker images (use sudo)
+            sudo docker system prune -f
