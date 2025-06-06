@@ -1,8 +1,12 @@
-POST http://localhost:3000/api/books HTTP/1.1
+POST http://56.228.34.122:3000/api/books HTTP/1.1
 content-type: application/json
 
 {
-    "title": "My New Book", 
-    "author": "John Doe", 
-    "isbn": "1234567890"
+    "title": "My New Book2", 
+    "author": "John Doe2", 
+    "isbn": "12345678902"
 }
+
+###
+
+GET http://56.228.34.122:3000/api/books  HTTP/1.1
