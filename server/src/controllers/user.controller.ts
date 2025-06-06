@@ -5,6 +5,13 @@ export const getAllUsers = async (_req: Request, res: Response) => {
   const users = await User.find();
   const users_static = [
     {
+      id: 0,
+      name: 'Narayan',
+      email: 'narayan@example.com',
+      age: 21,
+      role: 'admin',
+    },
+    {
       id: 1,
       name: 'Alice Johnson',
       email: 'alice@example.com',
